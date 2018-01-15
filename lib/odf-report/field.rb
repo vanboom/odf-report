@@ -1,11 +1,14 @@
 module ODFReport
   class Field
+    include ActionView::Helpers::NumberHelper
 
     DELIMITERS = %w([ ])
 
     def initialize(opts, &block)
       @name = opts[:name]
+      puts @name.inspect
       @data_field = opts[:data_field]
+      puts @data_field.inspect
 
       unless @value = opts[:value]
 
@@ -21,12 +24,17 @@ module ODFReport
     end
 
     def replace!(content, data_item = nil)
-
       txt = content.inner_html
 
       val = get_value(data_item)
 
-      txt.gsub!(to_placeholder, sanitize(val))
+      sv = sanitize(val)
+
+      # sub currency formats
+      txt.gsub!("$" + to_placeholder, number_to_currency(sv))
+
+      # sub the plain format
+      txt.gsub!(to_placeholder, sv)
 
       content.inner_html = txt
 
