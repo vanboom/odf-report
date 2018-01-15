@@ -6,9 +6,7 @@ module ODFReport
 
     def initialize(opts, &block)
       @name = opts[:name]
-      puts @name.inspect
       @data_field = opts[:data_field]
-      puts @data_field.inspect
 
       unless @value = opts[:value]
 
