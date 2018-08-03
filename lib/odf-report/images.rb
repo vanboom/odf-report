@@ -13,7 +13,7 @@ module ODFReport
       content.xpath("//text:p[text()[starts-with(., 'SIGNATURE_')]]").each do |node|
         tag_name = node.text
         href = "Pictures/" + tag_name + ".svg"
-        ink = "<text:p text:style-name='Standard'><draw:frame draw:name='#{tag_name}' text:anchor-type='as-char' svg:width='1.5in' svg:height='0.315in' draw:z-index='0'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame></text:p>"
+        ink = "<text:p text:style-name='Standard'><draw:frame draw:style-name='signature_frame' draw:name='#{tag_name}' text:anchor-type='as-char' svg:width='1.5in' svg:height='0.315in' draw:z-index='0'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame></text:p>"
         node.replace ink
         @new_images << href
       end
@@ -26,7 +26,7 @@ module ODFReport
         # TODO: this style needs to be applied to the signatures to get them to sit on the baseline
         # style = " style:vertical-pos='middle' style:vertical-rel='baseline' "
 
-        ink = "<text:span text:style-name='Standard'><draw:frame draw:name='#{tag_name}' text:anchor-type='as-char' svg:width='1.5in' svg:height='0.315in' draw:z-index='0'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame></text:span>"
+        ink = "<text:span text:style-name='Standard'><draw:frame draw:style-name='signature_frame' draw:name='#{tag_name}' text:anchor-type='as-char' svg:width='1.5in' svg:height='0.315in' draw:z-index='0'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame></text:span>"
         node.replace ink
         @new_images << href
       end

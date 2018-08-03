@@ -56,12 +56,18 @@ class Report
     @file.update_content do |file|
 
       file.update_files('content.xml', 'styles.xml', 'META-INF/manifest.xml') do |entry_name, txt|
-        puts entry_name.inspect.red
-        if entry_name.include? "manifest.xml"
+
+        case entry_name
+        when "META-INF/manifest.xml"
           parse_document(txt) do |doc|
             process_additional_images(doc)
           end
           next
+        when "styles.xml"
+          # add the signature frame style
+          parse_document(txt) do |doc|
+            add_signature_style(doc)
+          end
         end
 
         parse_document(txt) do |doc|
@@ -105,13 +111,38 @@ private
 
 
   def process_additional_images(doc)
-     puts @new_images.inspect.magenta
      @new_images.each do |image_name|
        #path = @images[image_name]
        node = doc.xpath("//manifest:manifest").first
        # add the newly loaded image to the document manifest
        node.add_child "<manifest:file-entry manifest:full-path='#{image_name}' manifest:media-type='image/svg+xml'/>"
      end
+  end
+
+  def add_signature_style(doc)
+    node = doc.xpath("//office:styles").first
+    xml = %$
+    <style:style style:name="signature_frame" style:family="graphic" style:parent-style-name="Graphics">
+      <style:graphic-properties
+        style:vertical-pos="middle"
+        style:vertical-rel="baseline"
+        style:mirror="none"
+        fo:clip="rect(0in, 0in, 0in, 0in)"
+        draw:luminance="0%"
+        draw:contrast="0%"
+        draw:red="0%"
+        draw:green="0%"
+        draw:blue="0%"
+        draw:gamma="100%"
+        draw:color-inversion="false"
+        draw:image-opacity="100%"
+        draw:color-mode="standard"
+        fo:margin-top="0in"
+        fo:margin-bottom="0in"
+        />
+      </style:style>
+    $
+    node.add_child xml
   end
 
 end
