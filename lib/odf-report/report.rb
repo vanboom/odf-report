@@ -11,6 +11,7 @@ class Report
     @fields = []
     @tables = []
     @images = {}
+    @new_images = []  # DP: images that are added in tables
     @image_names_replacements = {}
     @sections = []
 
@@ -54,15 +55,26 @@ class Report
 
     @file.update_content do |file|
 
-      file.update_files('content.xml', 'styles.xml') do |txt|
+      file.update_files('content.xml', 'styles.xml', 'META-INF/manifest.xml') do |entry_name, txt|
+        puts entry_name.inspect.red
+        if entry_name.include? "manifest.xml"
+          parse_document(txt) do |doc|
+            process_additional_images(doc)
+          end
+          next
+        end
 
         parse_document(txt) do |doc|
 
           @sections.each { |s| s.replace!(doc) }
-          @tables.each   { |t| t.replace!(doc) }
+          @tables.each do |t|
+            t.replace! doc
+          end
 
           @texts.each    { |t| t.replace!(doc) }
-          @fields.each   { |f| f.replace!(doc) }
+          @fields.each do |f|
+            f.replace! doc
+          end
 
           find_image_name_matches(doc)
           avoid_duplicate_image_names(doc)
@@ -89,6 +101,17 @@ private
     doc = Nokogiri::XML(txt)
     yield doc
     txt.replace(doc.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))
+  end
+
+
+  def process_additional_images(doc)
+     puts @new_images.inspect.magenta
+     @new_images.each do |image_name|
+       #path = @images[image_name]
+       node = doc.xpath("//manifest:manifest").first
+       # add the newly loaded image to the document manifest
+       node.add_child "<manifest:file-entry manifest:full-path='#{image_name}' manifest:media-type='image/svg+xml'/>"
+     end
   end
 
 end

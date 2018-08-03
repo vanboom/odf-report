@@ -28,7 +28,7 @@ module ODFReport
             data = is.sysread
 
             if content_files.include?(entry.name)
-              yield data
+              yield entry.name, data
             end
 
             @output_stream.put_next_entry(entry.name)
