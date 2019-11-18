@@ -1,7 +1,7 @@
 module ODFReport
   class Field
     include ActionView::Helpers::NumberHelper
-
+    attr_accessor :name, :data_field, :value
     DELIMITERS = %w([ ])
 
     def initialize(opts, &block)
@@ -25,15 +25,13 @@ module ODFReport
       txt = content.inner_html
 
       val = get_value(data_item)
-
       sv = sanitize(val)
-
       # sub currency formats
-      txt.gsub!("$" + to_placeholder, number_to_currency(sv))
-
+      if to_placeholder.match( /price|cost|cogs|tax|total/i )
+        txt.gsub!("$" + to_placeholder, number_to_currency(sv))
+      end
       # sub the plain format
       txt.gsub!(to_placeholder, sv)
-
       content.inner_html = txt
 
     end
