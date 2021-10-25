@@ -27,13 +27,14 @@ module ODFReport
       val = get_value(data_item)
       sv = sanitize(val)
       # sub currency formats
-      if to_placeholder.match( /price|cost|cogs|tax|total/i )
+      g1 = if to_placeholder.match( /price|cost|cogs|tax|total/i )
         txt.gsub!("$" + to_placeholder, number_to_currency(sv))
       end
       # sub the plain format
-      txt.gsub!(to_placeholder, sv)
-      content.inner_html = txt
-
+      g2 = txt.gsub!(to_placeholder, sv)
+      if g1 or g2
+        content.inner_html = txt
+      end
     end
 
     def get_value(data_item = nil)
