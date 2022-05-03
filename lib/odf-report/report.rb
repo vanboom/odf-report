@@ -124,7 +124,7 @@ private
     xml = %$
     <style:style style:name="signature_frame" style:family="graphic" style:parent-style-name="Graphics">
       <style:graphic-properties
-        style:vertical-pos="middle"
+        style:vertical-pos="from-top"
         style:vertical-rel="baseline"
         style:mirror="none"
         fo:clip="rect(0in, 0in, 0in, 0in)"
