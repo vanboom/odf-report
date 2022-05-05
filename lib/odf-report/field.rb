@@ -27,7 +27,7 @@ module ODFReport
       val = get_value(data_item)
       sv = sanitize(val)
       # sub currency formats
-      g1 = if to_placeholder.match( /price|cost|cogs|tax|total/i )
+      g1 = if to_placeholder.match( /price|cost|cogs|tax|total/i ) or val.class == "Money"
         txt.gsub!("$" + to_placeholder, number_to_currency(sv))
       end
       # sub the plain format
