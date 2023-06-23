@@ -122,7 +122,7 @@ private
   def add_signature_style(doc)
     node = doc.xpath("//office:styles").first
     xml = %$
-    <style:style style:name="signature_frame" style:family="graphic" style:parent-style-name="Graphics">
+    <style:style style:name="inline_svg_frame" style:family="graphic" style:parent-style-name="Graphics">
       <style:graphic-properties
         style:vertical-pos="from-top"
         style:vertical-rel="baseline"

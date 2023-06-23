@@ -16,8 +16,8 @@ module ODFReport
         tag_name = node.text
         inline_tag = detect_signature_tag(tag_name)
         href = "Pictures/" + inline_tag + ".svg"
-        #ink = "<text:span text:style-name='Standard'><draw:frame draw:style-name='signature_frame' draw:name='#{inline_tag}' text:anchor-type='as-char' svg:y='-0.3in' svg:width='1.75in' svg:height='0.37in' draw:z-index='1'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame></text:span>"
-        ink = "<draw:frame draw:style-name='signature_frame' draw:name='#{inline_tag}' text:anchor-type='as-char' svg:y='-0.3in' svg:width='1.75in' svg:height='0.37in' draw:z-index='1'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame>"
+        #ink = "<text:span text:style-name='Standard'><draw:frame draw:style-name='inline_svg_frame' draw:name='#{inline_tag}' text:anchor-type='as-char' svg:y='-0.3in' svg:width='1.75in' svg:height='0.37in' draw:z-index='1'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame></text:span>"
+        ink = "<draw:frame draw:style-name='inline_svg_frame' draw:name='#{inline_tag}' text:anchor-type='as-char' svg:y='-0.3in' svg:width='1.75in' svg:height='0.37in' draw:z-index='1'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame>"
         new_xml = node.inner_html.sub(inline_tag, ink)
         node.inner_html = new_xml
         @new_images << href
@@ -28,18 +28,12 @@ module ODFReport
         tag_name = node.text
         # TODO: this style needs to be applied to the signatures to get them to sit on the baseline
         # style = " style:vertical-pos='middle' style:vertical-rel='baseline' "
-
-        inline_tag = detect_signature_tag(node.text)
+        inline_tag = detect_signature_tag(tag_name)
         if inline_tag
           href = "Pictures/" + inline_tag + ".svg"
-          ink = "<text:span text:style-name='Standard'><draw:frame draw:style-name='signature_frame' draw:name='#{inline_tag}' text:anchor-type='as-char' svg:y='-0.3in' svg:width='1.75in' svg:height='0.37in' draw:z-index='1'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame></text:span>"
+          ink = "<text:span text:style-name='Standard'><draw:frame draw:style-name='inline_svg_frame' draw:name='#{inline_tag}' text:anchor-type='as-char' svg:y='-0.3in' svg:width='1.75in' svg:height='0.37in' draw:z-index='1'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame></text:span>"
           new_xml = node.inner_html.sub(inline_tag, ink)
           node.inner_html = new_xml
-        else
-          # This is the old way, not sure if we will ever reach this with the above logic
-          href = "Pictures/" + tag_name + ".svg"
-          ink = "<text:span text:style-name='Standard'><draw:frame draw:style-name='signature_frame' draw:name='#{tag_name}' text:anchor-type='as-char' svg:y='-0.3in' svg:width='1.75in' svg:height='0.37in' draw:z-index='1'><draw:image xlink:href='#{href}' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/></draw:frame></text:span>"
-          node.replace ink
         end
         @new_images << href
       end
@@ -77,6 +71,10 @@ module ODFReport
 
     def detect_signature_tag(content)
       content[/SIGNATURE_(\d*)/]
+    end
+
+    def detect_image_tag(context)
+      content[/(.*)_IMAGE$/]
     end
   end
 
