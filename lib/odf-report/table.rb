@@ -37,6 +37,8 @@ class Table
 
       new_node = get_next_row
 
+      next if new_node.nil?
+
       @tables.each    { |t| t.replace!(new_node, data_item) }
 
       @texts.each     { |t| t.replace!(new_node, data_item) }

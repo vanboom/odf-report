@@ -25,6 +25,8 @@ module ODFReport
 
         new_section = get_section_node
 
+        next if new_section.nil?
+
         @tables.each    { |t| t.replace!(new_section, data_item) }
 
         @sections.each  { |s| s.replace!(new_section, data_item) }
