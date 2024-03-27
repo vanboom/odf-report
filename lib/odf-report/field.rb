@@ -37,8 +37,15 @@ module ODFReport
         ##
         # Special handling allows us to inject raw ODT/XML into the document
         if @raw
+          puts to_placeholder.to_s.red
           old_node = content.xpath("//text:p[contains(text(), \"#{to_placeholder}\")]").first
-          old_node.replace val
+          if old_node
+            old_node.replace val
+          end
+          old_node = content.xpath("//text:span[contains(text(), \"#{to_placeholder}\")]").first
+          if old_node
+            old_node.parent.replace val
+          end
         else
           content.inner_html = txt
         end
