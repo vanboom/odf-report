@@ -2,6 +2,14 @@ module ODFReport
 
   module Nested
 
+    ##
+    # a RAW field will accept an XML fragment and inject as ODT XML code
+    def add_raw_field(field_tag, value='')
+      opts = {:name => field_tag, :value => value, :raw => true}
+      field = Field.new(opts)
+      @fields << field
+    end
+
     def add_field(name, data_field=nil, &block)
       opts = {:name => name, :data_field => data_field}
       field = Field.new(opts, &block)
