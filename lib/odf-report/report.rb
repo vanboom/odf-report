@@ -19,6 +19,8 @@ class Report
 
   end
 
+  ##
+  # a RAW field will accept an XML fragment and inject as ODT XML code
   def add_raw_field(field_tag, value='')
     opts = {:name => field_tag, :value => value, :raw => true}
     field = Field.new(opts)
