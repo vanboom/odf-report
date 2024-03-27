@@ -7,6 +7,7 @@ module ODFReport
     def initialize(opts, &block)
       @name = opts[:name]
       @data_field = opts[:data_field]
+      @raw = opts[:raw]
 
       unless @value = opts[:value]
 
@@ -33,7 +34,14 @@ module ODFReport
       # sub the plain format
       g2 = txt.gsub!(to_placeholder, sv)
       if g1 or g2
-        content.inner_html = txt
+        ##
+        # Special handling allows us to inject raw ODT/XML into the document
+        if @raw
+          old_node = content.xpath("//text:p[contains(text(), \"#{to_placeholder}\")]").first
+          old_node.replace val
+        else
+          content.inner_html = txt
+        end
       end
     end
 

@@ -19,6 +19,12 @@ class Report
 
   end
 
+  def add_raw_field(field_tag, value='')
+    opts = {:name => field_tag, :value => value, :raw => true}
+    field = Field.new(opts)
+    @fields << field
+  end
+
   def add_field(field_tag, value='')
     opts = {:name => field_tag, :value => value}
     field = Field.new(opts)
