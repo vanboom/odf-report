@@ -153,6 +153,18 @@ private
     node.add_child xml
   end
 
+  def add_field_styles(doc)
+    node = doc.xpath("//office:styles").first
+    #node = doc.xpath("//office:automatic-styles").last
+    @fields.each do |f|
+      if f.raw
+        nodex = Nokogiri::XML(f.get_raw_styles)
+        nodex.each do |n|
+          node.add_child n
+        end
+      end
+    end
+  end
 end
 
 end

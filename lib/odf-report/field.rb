@@ -1,7 +1,7 @@
 module ODFReport
   class Field
     include ActionView::Helpers::NumberHelper
-    attr_accessor :name, :data_field, :value
+    attr_accessor :name, :data_field, :value, :raw
     DELIMITERS = %w([ ])
 
     def initialize(opts, &block)
@@ -40,11 +40,11 @@ module ODFReport
           puts to_placeholder.to_s.red
           old_node = content.xpath("//text:p[contains(text(), \"#{to_placeholder}\")]").first
           if old_node
-            old_node.replace val
+            old_node.replace get_raw_body
           end
           old_node = content.xpath("//text:span[contains(text(), \"#{to_placeholder}\")]").first
           if old_node
-            old_node.parent.replace val
+            old_node.parent.replace get_raw_body
           end
         else
           content.inner_html = txt
@@ -54,6 +54,18 @@ module ODFReport
 
     def get_value(data_item = nil)
       @value || @block.call(data_item) || ''
+    end
+
+    ##
+    # When given a pandoc ODT, we can extract the body as XML nodes
+    def get_raw_body
+      Nokogiri::XML(get_value).at_xpath('//office:body/office:text').inner_html
+    end
+
+    ##
+    # When given a pandoc ODT, we can extract the styles
+    def get_raw_styles
+      Nokogiri::XML(get_value).at_xpath('//office:automatic-styles').inner_html rescue nil
     end
 
     def extract_value(data_item)
